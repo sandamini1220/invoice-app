@@ -1,3 +1,4 @@
+//pasword= 3N7wvVAt1MnTBHNx
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -9,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/invoicedb', {
+mongoose.connect('mongodb+srv://admin:3N7wvVAt1MnTBHNx@cluster0.lf4cezd.mongodb.net/', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
