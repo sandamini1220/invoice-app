@@ -16,10 +16,7 @@ const ViewInvoice = () => {
         setInvoice(data);
         setLoading(false);
       })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
+      .catch(() => setLoading(false));
   }, [id]);
 
   if (loading) return <p className="text-center mt-10">Loading invoice...</p>;
@@ -31,7 +28,9 @@ const ViewInvoice = () => {
       <p><strong>Invoice No:</strong> {invoice.invoiceNo}</p>
       <p><strong>Date:</strong> {invoice.date}</p>
       <p><strong>Customer:</strong> {invoice.customer}</p>
-      <p><strong>Amount:</strong> ${invoice.amount}</p>
+      <p><strong>Amount:</strong> ${invoice.amount.toFixed(2)}</p>
+      <p><strong>First Item:</strong> {invoice.firstItem || '-'}</p>
+      <p><strong>Balance:</strong> ${invoice.balance?.toFixed(2) || '0.00'}</p>
     </div>
   );
 };

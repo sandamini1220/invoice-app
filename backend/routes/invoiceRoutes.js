@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get single invoice
+// Get invoice by ID
 router.get('/:id', async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id);
@@ -23,27 +23,32 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Create new invoice
+// Create invoice (invoiceNo is generated automatically by the model pre-save hook)
 router.post('/', async (req, res) => {
   try {
-    console.log('Create invoice request body:', req.body);  // Debug log
+    const { date, customer, amount, firstItem, balance } = req.body;
 
-    const { invoiceNo, date, customer, amount } = req.body;
-
-    if (!invoiceNo || !date || !customer || amount == null) {
+    if (!date || !customer || amount == null) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const newInvoice = new Invoice({ invoiceNo, date, customer, amount });
+    const newInvoice = new Invoice({
+      date,
+      customer,
+      amount,
+      firstItem,
+      balance,
+      // no invoiceNo here - auto generated
+    });
+
     await newInvoice.save();
     res.status(201).json(newInvoice);
   } catch (error) {
-    console.error('Error creating invoice:', error);
     res.status(500).json({ error: 'Failed to create invoice' });
   }
 });
 
-// Update invoice
+// Update invoice by ID
 router.put('/:id', async (req, res) => {
   try {
     const updated = await Invoice.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -54,7 +59,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Delete invoice
+// Delete invoice by ID
 router.delete('/:id', async (req, res) => {
   try {
     const deleted = await Invoice.findByIdAndDelete(req.params.id);
