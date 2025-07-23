@@ -1,6 +1,10 @@
+// controllers/invoiceController.js
+
 const Invoice = require('../models/invoiceModel');
 
-// Get all invoices
+// @desc    Get all invoices
+// @route   GET /api/invoices
+// @access  Public
 exports.getInvoices = async (req, res) => {
   try {
     const invoices = await Invoice.find();
@@ -10,7 +14,9 @@ exports.getInvoices = async (req, res) => {
   }
 };
 
-// Get one invoice
+// @desc    Get single invoice by ID
+// @route   GET /api/invoices/:id
+// @access  Public
 exports.getInvoiceById = async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id);
@@ -21,11 +27,27 @@ exports.getInvoiceById = async (req, res) => {
   }
 };
 
-// Create new invoice
+// @desc    Create new invoice
+// @route   POST /api/invoices
+// @access  Public
 exports.createInvoice = async (req, res) => {
   const { invoiceNo, date, customerName, firstItem, totalAmount, balance } = req.body;
+
+  // Validate required fields
+  if (!invoiceNo || !date || !customerName || !firstItem || totalAmount == null || balance == null) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
   try {
-    const newInvoice = new Invoice({ invoiceNo, date, customerName, firstItem, totalAmount, balance });
+    const newInvoice = new Invoice({
+      invoiceNo,
+      date,
+      customerName,
+      firstItem,
+      totalAmount,
+      balance,
+    });
+
     await newInvoice.save();
     res.status(201).json(newInvoice);
   } catch (err) {
@@ -33,23 +55,37 @@ exports.createInvoice = async (req, res) => {
   }
 };
 
-// Update invoice
+// @desc    Update existing invoice
+// @route   PUT /api/invoices/:id
+// @access  Public
 exports.updateInvoice = async (req, res) => {
   try {
-    const updatedInvoice = await Invoice.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedInvoice) return res.status(404).json({ message: 'Invoice not found' });
+    const updatedInvoice = await Invoice.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+
+    if (!updatedInvoice) {
+      return res.status(404).json({ message: 'Invoice not found' });
+    }
+
     res.json(updatedInvoice);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// Delete invoice
+// @desc    Delete invoice
+// @route   DELETE /api/invoices/:id
+// @access  Public
 exports.deleteInvoice = async (req, res) => {
   try {
     const deleted = await Invoice.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ message: 'Invoice not found' });
-    res.json({ message: 'Invoice deleted' });
+
+    if (!deleted) {
+      return res.status(404).json({ message: 'Invoice not found' });
+    }
+
+    res.json({ message: 'Invoice deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
