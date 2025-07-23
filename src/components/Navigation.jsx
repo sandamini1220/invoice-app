@@ -8,12 +8,7 @@ const Navigation = () => (
       <Link to="/" className="text-blue-600 hover:underline">
         Dashboard
       </Link>
-      <Link
-        to="/create"
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 font-medium"
-      >
-        + Create Invoice
-      </Link>
+      
     </div>
   </nav>
 );
