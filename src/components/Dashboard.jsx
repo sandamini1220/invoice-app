@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getInvoices, deleteInvoice } from '../api/invoiceAPI';
 
 const Dashboard = () => {
   const [invoices, setInvoices] = useState([]);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-
   const [currentPage, setCurrentPage] = useState(1);
   const invoicesPerPage = 5;
-  const maxPageButtons = 5; 
+  const maxPageButtons = 5;
 
-  const fetchInvoices = () => {
-    fetch('http://localhost:5000/api/invoices')
-      .then(res => res.json())
-      .then(data => setInvoices(data))
-      .catch(err => {
-        console.error('Failed to fetch invoices:', err);
-        setError('Failed to load invoices');
-      });
+  const fetchInvoices = async () => {
+    try {
+      const response = await getInvoices();
+      setInvoices(response.data);
+    } catch (err) {
+      console.error('Failed to fetch invoices:', err);
+      setError('Failed to load invoices');
+    }
   };
 
   useEffect(() => {
@@ -28,25 +28,19 @@ const Dashboard = () => {
     if (!window.confirm('Are you sure you want to delete this invoice?')) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/invoices/${id}`, {
-        method: 'DELETE',
-      });
-      if (res.ok) fetchInvoices();
-      else alert('Failed to delete invoice');
+      await deleteInvoice(id);
+      fetchInvoices();
     } catch (err) {
       console.error('Error deleting invoice:', err);
       alert('Error deleting invoice');
     }
   };
 
-  // Filter invoices by customer name
   const filteredInvoices = invoices.filter(inv =>
     inv.customer?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredInvoices.length / invoicesPerPage);
-
-  // Slice invoices for current page
   const indexOfLastInvoice = currentPage * invoicesPerPage;
   const indexOfFirstInvoice = indexOfLastInvoice - invoicesPerPage;
   const currentInvoices = filteredInvoices.slice(indexOfFirstInvoice, indexOfLastInvoice);
@@ -63,25 +57,18 @@ const Dashboard = () => {
     setCurrentPage(1);
   }, [searchTerm]);
 
-  // Function to get page numbers with ellipsis
   const getPageNumbers = () => {
     const pages = [];
     if (totalPages <= maxPageButtons) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
       let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
       let endPage = startPage + maxPageButtons - 1;
-
       if (endPage > totalPages) {
         endPage = totalPages;
         startPage = endPage - maxPageButtons + 1;
       }
-
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-      }
+      for (let i = startPage; i <= endPage; i++) pages.push(i);
     }
     return pages;
   };
@@ -129,10 +116,12 @@ const Dashboard = () => {
               {currentInvoices.map((inv) => (
                 <tr key={inv._id} className="text-center">
                   <td className="py-2 px-4 border">{inv.invoiceNo}</td>
-                  <td className="py-2 px-4 border">{inv.date}</td>
+                  <td className="py-2 px-4 border">{new Date(inv.date).toLocaleDateString()}</td>
                   <td className="py-2 px-4 border">{inv.firstItem || 'N/A'}</td>
-                  <td className="py-2 px-4 border">${inv.amount.toFixed(2)}</td>
-                  <td className="py-2 px-4 border">{inv.balance != null ? `$${inv.balance.toFixed(2)}` : 'N/A'}</td>
+                  <td className="py-2 px-4 border">${inv.amount?.toFixed(2)}</td>
+                  <td className="py-2 px-4 border">
+                    {inv.balance != null ? `$${inv.balance.toFixed(2)}` : 'N/A'}
+                  </td>
                   <td className="py-2 px-4 border space-x-2">
                     <Link to={`/invoice/${inv._id}`}>
                       <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
@@ -156,7 +145,7 @@ const Dashboard = () => {
             </tbody>
           </table>
 
-          {/* Pagination Controls */}
+          {/* Pagination */}
           <div className="flex justify-center items-center mt-4 space-x-2">
             <button
               onClick={goToPrevPage}
@@ -170,7 +159,6 @@ const Dashboard = () => {
               Prev
             </button>
 
-            {/* First page and leading ellipsis */}
             {pageNumbers[0] > 1 && (
               <>
                 <button
@@ -187,7 +175,6 @@ const Dashboard = () => {
               </>
             )}
 
-            {/* Numbered page buttons */}
             {pageNumbers.map((num) => (
               <button
                 key={num}
@@ -202,7 +189,6 @@ const Dashboard = () => {
               </button>
             ))}
 
-            {/* Last page and trailing ellipsis */}
             {pageNumbers[pageNumbers.length - 1] < totalPages && (
               <>
                 {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && <span>...</span>}
