@@ -6,8 +6,8 @@ const invoiceSchema = new mongoose.Schema({
   date: { type: Date, required: true },
   customer: { type: String, required: true },
   amount: { type: Number, required: true },
-  firstItem: String,
-  balance: Number,
+  firstItem: { type: String, default: '' }, 
+  balance: { type: Number, default: 0 },     
 });
 
 // Pre 'save' hook to auto-increment invoiceNo if new document
@@ -19,7 +19,6 @@ invoiceSchema.pre('save', async function (next) {
         { $inc: { seq: 1 } },
         { new: true, upsert: true }
       );
-      // Format invoiceNo as INV00001, INV00002, etc.
       this.invoiceNo = 'INV' + counter.seq.toString().padStart(5, '0');
       next();
     } catch (err) {

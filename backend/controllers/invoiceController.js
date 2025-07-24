@@ -1,10 +1,8 @@
-// controllers/invoiceController.js
-
-const Invoice = require('../models/invoiceModel');
+const Invoice = require('../models/Invoice');
 
 // @desc    Get all invoices
 // @route   GET /api/invoices
-// @access  Public
+// @access  Public (or Protected if you use auth)
 exports.getInvoices = async (req, res) => {
   try {
     const invoices = await Invoice.find();
@@ -16,7 +14,7 @@ exports.getInvoices = async (req, res) => {
 
 // @desc    Get single invoice by ID
 // @route   GET /api/invoices/:id
-// @access  Public
+// @access  Public (or Protected if you use auth)
 exports.getInvoiceById = async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id);
@@ -29,12 +27,12 @@ exports.getInvoiceById = async (req, res) => {
 
 // @desc    Create new invoice
 // @route   POST /api/invoices
-// @access  Public
+// @access  Public (or Protected if you use auth)
 exports.createInvoice = async (req, res) => {
-  const { invoiceNo, date, customerName, firstItem, totalAmount, balance } = req.body;
+  const { invoiceNo, date, customer, firstItem, amount, balance } = req.body;
 
   // Validate required fields
-  if (!invoiceNo || !date || !customerName || !firstItem || totalAmount == null || balance == null) {
+  if (!invoiceNo || !date || !customer || !firstItem || amount == null || balance == null) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
@@ -42,9 +40,9 @@ exports.createInvoice = async (req, res) => {
     const newInvoice = new Invoice({
       invoiceNo,
       date,
-      customerName,
+      customer,
       firstItem,
-      totalAmount,
+      amount,
       balance,
     });
 
@@ -57,7 +55,7 @@ exports.createInvoice = async (req, res) => {
 
 // @desc    Update existing invoice
 // @route   PUT /api/invoices/:id
-// @access  Public
+// @access  Public (or Protected if you use auth)
 exports.updateInvoice = async (req, res) => {
   try {
     const updatedInvoice = await Invoice.findByIdAndUpdate(req.params.id, req.body, {
@@ -76,7 +74,7 @@ exports.updateInvoice = async (req, res) => {
 
 // @desc    Delete invoice
 // @route   DELETE /api/invoices/:id
-// @access  Public
+// @access  Public (or Protected if you use auth)
 exports.deleteInvoice = async (req, res) => {
   try {
     const deleted = await Invoice.findByIdAndDelete(req.params.id);
