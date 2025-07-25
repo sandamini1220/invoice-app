@@ -6,7 +6,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import Navigation from './components/Navigation';
 import Dashboard from './components/Dashboard';
 import InvoiceForm from './components/InvoiceForm';
-import ViewInvoice from './components/ViewInvoice';
 import EditInvoice from './pages/EditInvoice';
 import Register from './components/Register';
 import Login from './components/Login';
@@ -42,14 +41,7 @@ const App = () => {
               </PrivateRoute>
             }
           />
-          <Route
-            path="/invoice/:id"
-            element={
-              <PrivateRoute>
-                <ViewInvoice />
-              </PrivateRoute>
-            }
-          />
+          
           <Route
             path="/edit/:id"
             element={
@@ -59,6 +51,7 @@ const App = () => {
             }
           />
         </Routes>
+
       </div>
     </Router>
   );
