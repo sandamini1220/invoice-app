@@ -32,13 +32,12 @@ exports.createInvoice = async (req, res) => {
   const { invoiceNo, date, customer, firstItem, amount, balance } = req.body;
 
   // Validate required fields
-  if (!invoiceNo || !date || !customer || !firstItem || amount == null || balance == null) {
+  if (!date || !customer || !firstItem || amount == null || balance == null){
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
   try {
     const newInvoice = new Invoice({
-      invoiceNo,
       date,
       customer,
       firstItem,

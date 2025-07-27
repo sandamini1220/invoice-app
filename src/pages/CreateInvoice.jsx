@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 
 const CreateInvoice = () => {
   const [form, setForm] = useState({
-    invoiceNo: '',
     date: '',
     customer: '',
+    firstItem: '',  
     amount: '',
+    balance: '',    
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -18,10 +19,17 @@ const CreateInvoice = () => {
   const handleSubmit = e => {
     e.preventDefault();
 
+    // Optionally convert amount and balance to numbers if needed
+    const payload = {
+      ...form,
+      amount: Number(form.amount),
+      balance: Number(form.balance),
+    };
+
     fetch('http://localhost:5000/api/invoices', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify(payload),
     })
       .then(res => {
         if (!res.ok) throw new Error('Failed to save invoice');
@@ -68,10 +76,28 @@ const CreateInvoice = () => {
           className="w-full p-2 border rounded"
         />
         <input
+          type="text"
+          name="firstItem"
+          placeholder="First Item"
+          value={form.firstItem}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border rounded"
+        />
+        <input
           type="number"
           name="amount"
           placeholder="Amount"
           value={form.amount}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border rounded"
+        />
+        <input
+          type="number"
+          name="balance"
+          placeholder="Balance"
+          value={form.balance}
           onChange={handleChange}
           required
           className="w-full p-2 border rounded"
