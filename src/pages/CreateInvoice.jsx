@@ -3,12 +3,11 @@ import { useNavigate } from 'react-router-dom';
 
 const CreateInvoice = () => {
   const [form, setForm] = useState({
-    invoiceNo: '',
     date: '',
     customer: '',
-    firstItem: '',  // NEW
+    firstItem: '',  
     amount: '',
-    balance: '',    // NEW
+    balance: '',    
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
