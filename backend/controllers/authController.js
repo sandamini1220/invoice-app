@@ -2,9 +2,9 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const SECRET_KEY = 'your_jwt_secret'; // ideally from .env
+const SECRET_KEY = process.env.JWT_SECRET;
 
-exports.register = async (req, res) => {
+exports.register = async (req, res, next) => {
   try {
     const { username, password } = req.body;
     const hashed = await bcrypt.hash(password, 10);
@@ -12,11 +12,11 @@ exports.register = async (req, res) => {
     await user.save();
     res.status(201).json({ message: 'User registered' });
   } catch (err) {
-    res.status(500).json({ error: 'Registration failed' });
+    next(err);
   }
 };
 
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
@@ -28,6 +28,6 @@ exports.login = async (req, res) => {
     const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1d' });
     res.json({ token });
   } catch (err) {
-    res.status(500).json({ error: 'Login failed' });
+    next(err);
   }
 };
