@@ -4,11 +4,13 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const invoiceRoutes = require('./routes/invoiceRoutes');
 const authRoutes = require('./routes/authRoutes');
+const customerRoutes = require('./routes/customerRoutes');
+const itemRoutes = require('./routes/itemRoutes');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use('/api/auth', authRoutes);
+
 
 // MongoDB connection
 mongoose.connect('mongodb+srv://admin:3N7wvVAt1MnTBHNx@cluster0.lf4cezd.mongodb.net/', {
@@ -21,6 +23,10 @@ db.on('error', (err) => console.error('MongoDB connection error:', err));
 
 // Routes
 app.use('/api/invoices', invoiceRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/customers', customerRoutes);
+app.use('/api/items', itemRoutes);
+
 
 // Root
 app.get('/', (req, res) => {

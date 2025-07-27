@@ -10,6 +10,8 @@ import EditInvoice from './pages/EditInvoice';
 import Register from './components/Register';
 import Login from './components/Login';
 import PrivateRoute from './components/PrivateRoute';
+import Customers from './pages/Customers';
+import Items from './pages/Items';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -41,7 +43,6 @@ const App = () => {
               </PrivateRoute>
             }
           />
-          
           <Route
             path="/edit/:id"
             element={
@@ -50,8 +51,23 @@ const App = () => {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/customers"
+            element={
+              <PrivateRoute>
+                <Customers />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/items"
+            element={
+              <PrivateRoute>
+                <Items />
+              </PrivateRoute>
+            }
+          />
         </Routes>
-
       </div>
     </Router>
   );
