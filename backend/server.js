@@ -35,10 +35,8 @@ app.get('/', (req, res) => {
   res.send('Invoice API is running 🚀');
 });
 
-/**
- * Global Error Handling Middleware
- * This catches errors forwarded via next(err) in your controllers
- */
+// Global Error Handling Middleware
+ 
 app.use((err, req, res, next) => {
   console.error(err.stack); // log error stack trace for debugging
 
