@@ -19,10 +19,28 @@ const Register = () => {
     <div className="container mt-5">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Name" className="form-control my-2" onChange={e => setForm({ ...form, name: e.target.value })} />
-        <input type="email" placeholder="Email" className="form-control my-2" onChange={e => setForm({ ...form, email: e.target.value })} />
-        <input type="password" placeholder="Password" className="form-control my-2" onChange={e => setForm({ ...form, password: e.target.value })} />
-        <button className="btn btn-primary">Register</button>
+        <input
+          id="username"
+          type="text"
+          placeholder="Name"
+          className="form-control my-2"
+          onChange={e => setForm({ ...form, name: e.target.value })}
+        />
+        <input
+          id="email"
+          type="email"
+          placeholder="Email"
+          className="form-control my-2"
+          onChange={e => setForm({ ...form, email: e.target.value })}
+        />
+        <input
+          id="password"
+          type="password"
+          placeholder="Password"
+          className="form-control my-2"
+          onChange={e => setForm({ ...form, password: e.target.value })}
+        />
+        <button id="registerButton" className="btn btn-primary">Register</button>
       </form>
     </div>
   );
