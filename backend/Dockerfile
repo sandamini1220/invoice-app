@@ -1,18 +1,12 @@
-# Use Node base image
-FROM node:18
+FROM node:18-alpine
 
-# Set working directory
 WORKDIR /app
-
-# Copy files
 COPY package*.json ./
+RUN npm install
 COPY . .
 
-# Install dependencies
-RUN npm install
+# Copy .env (optional if mounted via volume or passed in compose)
+# COPY .env .env
 
-# Expose the port your server listens on
 EXPOSE 5000
-
-# Start the backend
-CMD ["node", "server.js"]
+CMD ["npm", "start"]

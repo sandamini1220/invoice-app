@@ -1,0 +1,24 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb+srv://admin:3N7wvVAt1MnTBHNx@cluster0.lf4cezd.mongodb.net/invoicedb?retryWrites=true&w=majority&appName=Cluster0
+      - JWT_SECRET=383516be890e5e7bb7ddafdebb34b32098f0ff8f3afdbfada6b1aa89baccf517594ac686751566fad88d83503b663bb39b49bcfbb4ac756ff718e89bc5baeb49
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"  # Public access
+    depends_on:
+      - frontend
+      - backend
