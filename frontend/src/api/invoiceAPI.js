@@ -1,18 +1,20 @@
 import axios from 'axios';
+import keycloak from '../KeycloakService';
 
-const BASE_URL = 'http://localhost:5000/api/invoices';
+const API = axios.create({ baseURL: 'http://localhost:5000/api' });
 
-// Create Axios instance
-const axiosInstance = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+// Ensure token fresh before each request
+API.interceptors.request.use(async (config) => {
+  if (keycloak?.token) {
+    try { await keycloak.updateToken(30); } catch (e) { /* ignore */ }
+    config.headers.Authorization = `Bearer ${keycloak.token}`;
+  }
+  return config;
 });
 
-// Use instance for all API calls
-export const getInvoices = () => axiosInstance.get('/');
-export const getInvoiceById = (id) => axiosInstance.get(`/${id}`);
-export const createInvoice = (data) => axiosInstance.post('/', data);
-export const updateInvoice = (id, data) => axiosInstance.put(`/${id}`, data);
-export const deleteInvoice = (id) => axiosInstance.delete(`/${id}`);
+export const fetchInvoices   = () => API.get('/invoices');
+export const getInvoices     = fetchInvoices;   
+export const getInvoiceById  = (id) => API.get(`/invoices/${id}`);
+export const createInvoice   = (data) => API.post('/invoices', data);
+export const updateInvoice   = (id, data) => API.put(`/invoices/${id}`, data);
+export const deleteInvoice   = (id) => API.delete(`/invoices/${id}`);
