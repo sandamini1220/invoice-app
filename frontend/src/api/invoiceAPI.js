@@ -5,19 +5,10 @@ const BASE_URL = 'http://localhost:5000/api/invoices';
 // Create Axios instance
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
-});
-
-// Add token to every request
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
+  headers: {
+    'Content-Type': 'application/json',
   },
-  (error) => Promise.reject(error)
-);
+});
 
 // Use instance for all API calls
 export const getInvoices = () => axiosInstance.get('/');

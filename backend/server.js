@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const invoiceRoutes = require('./routes/invoiceRoutes');
-const authRoutes = require('./routes/authRoutes');
 const customerRoutes = require('./routes/customerRoutes');
 const itemRoutes = require('./routes/itemRoutes');
 
@@ -26,7 +25,6 @@ db.on('error', (err) => console.error('MongoDB connection error:', err));
 
 // Routes
 app.use('/api/invoices', invoiceRoutes);
-app.use('/api/auth', authRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/items', itemRoutes);
 
