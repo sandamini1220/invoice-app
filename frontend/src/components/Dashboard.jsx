@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { getInvoices, deleteInvoice } from '../api/invoiceAPI';
 
-const Dashboard = ({ user }) => {
+const Dashboard = () => {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [deleteLoading, setDeleteLoading] = useState(null);
-  const navigate = useNavigate();
+
   const invoicesPerPage = 5;
   const maxPageButtons = 5;
 
@@ -22,13 +22,7 @@ const Dashboard = ({ user }) => {
       setInvoices(Array.isArray(invoiceData) ? invoiceData : []);
     } catch (err) {
       console.error('Failed to fetch invoices:', err);
-      if (err.response?.status === 401) {
-        setError('Authentication required. Please log in again.');
-        localStorage.removeItem('token');
-        navigate('/login');
-      } else if (err.response?.status === 403) {
-        setError('Access denied. You do not have permission to view invoices.');
-      } else if (err.response?.status >= 500) {
+      if (err.response?.status >= 500) {
         setError('Server error. Please try again later.');
       } else if (err.code === 'NETWORK_ERROR' || !err.response) {
         setError('Network error. Please check your connection.');
@@ -70,10 +64,6 @@ const Dashboard = ({ user }) => {
       if (err.response?.status === 404) {
         errorMessage = 'Invoice not found. It may have already been deleted.';
         fetchInvoices();
-      } else if (err.response?.status === 401) {
-        errorMessage = 'Authentication required. Please log in again.';
-        localStorage.removeItem('token');
-        navigate('/login');
       } else if (err.response?.data?.message) {
         errorMessage = err.response.data.message;
       }
@@ -150,7 +140,6 @@ const Dashboard = ({ user }) => {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h2 className="text-3xl font-bold text-gray-800">Invoice Dashboard</h2>
-          {user && <p className="text-gray-600 mt-1">Welcome back, {user.name}</p>}
         </div>
         <Link
           to="/create"

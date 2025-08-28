@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Navigation = () => {
-  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
-  };
 
   return (
     <nav className="bg-white shadow-md p-4">
@@ -26,12 +20,6 @@ const Navigation = () => {
           <Link to="/items" className="text-blue-600 hover:text-blue-800">
             Items
           </Link>
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            Logout
-          </button>
         </div>
 
         {/* Hamburger button for mobile */}
@@ -83,12 +71,6 @@ const Navigation = () => {
           >
             Items
           </Link>
-          <button
-            onClick={handleLogout}
-            className="block w-full text-left bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            Logout
-          </button>
         </div>
       )}
     </nav>
