@@ -1,7 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 import Navigation from './components/Navigation';
 import Dashboard from './components/Dashboard';
@@ -9,24 +7,41 @@ import InvoiceForm from './components/InvoiceForm';
 import EditInvoice from './pages/EditInvoice';
 import Customers from './pages/Customers';
 import Items from './pages/Items';
+import PrivateRoute from './components/PrivateRoute';
 
-const App = () => {
-  return (
-    <Router>
-      <ToastContainer />
-      <div className="min-h-screen bg-gray-100">
-        <Navigation />
-        <Routes>
-          {/* Direct Public Routes (no authentication) */}
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/create" element={<InvoiceForm />} />
-          <Route path="/edit/:id" element={<EditInvoice />} />
-          <Route path="/customers" element={<Customers />} />
-          <Route path="/items" element={<Items />} />
-        </Routes>
-      </div>
-    </Router>
-  );
-};
+const App = () => (
+  <Router>
+    <div className="min-h-screen bg-gray-100">
+      <Navigation />
+      <Routes>
+        <Route path="/" element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        } />
+        <Route path="/create" element={
+          <PrivateRoute roles={['admin']}>
+            <InvoiceForm />
+          </PrivateRoute>
+        } />
+        <Route path="/edit/:id" element={
+          <PrivateRoute roles={['admin']}>
+            <EditInvoice />
+          </PrivateRoute>
+        } />
+        <Route path="/customers" element={
+          <PrivateRoute>
+            <Customers />
+          </PrivateRoute>
+        } />
+        <Route path="/items" element={
+          <PrivateRoute>
+            <Items />
+          </PrivateRoute>
+        } />
+      </Routes>
+    </div>
+  </Router>
+);
 
 export default App;
