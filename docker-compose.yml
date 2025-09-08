@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   frontend:
@@ -7,7 +7,7 @@ services:
       - "3000:80"
     depends_on:
       - backend
-    networks: 
+    networks:
       - appnet
 
   backend:
@@ -15,12 +15,13 @@ services:
     environment:
       - PORT=5000
       - MONGO_URI=mongodb+srv://admin:3N7wvVAt1MnTBHNx@cluster0.lf4cezd.mongodb.net/invoicedb?retryWrites=true&w=majority&appName=Cluster0
-      - KC_REALM=invoice_realm
-      - KC_AUTH_URL=http://keycloak:8080
-      - KC_RESOURCE=backend-api
+      - KEYCLOAK_REALM=mern-app
+      - KEYCLOAK_AUTH_SERVER_URL=http://localhost:8080/
+      - KEYCLOAK_CLIENT_ID=mern-frontend
+      - SESSION_SECRET=your-secret-key
     ports:
       - "5000:5000"
-    networks: 
+    networks:
       - appnet
 
   keycloak:
@@ -33,7 +34,7 @@ services:
       - "8080:8080"
     volumes:
       - keycloak_data:/opt/keycloak/data
-    networks: 
+    networks:
       - appnet
 
   nginx:
@@ -43,7 +44,7 @@ services:
     depends_on:
       - frontend
       - backend
-    networks: 
+    networks:
       - appnet
 
 networks:
